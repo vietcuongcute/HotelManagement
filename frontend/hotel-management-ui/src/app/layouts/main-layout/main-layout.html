@@ -1,0 +1,99 @@
+<div class="min-h-screen bg-[#f8f5f0] text-slate-950">
+  <header class="sticky top-0 z-50 border-b border-white/40 bg-white/85 backdrop-blur-xl">
+    <nav class="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+      <a routerLink="/" class="flex items-center gap-3">
+        <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#1f2a44] text-lg font-black text-white shadow-lg">
+          H
+        </div>
+
+        <div>
+          <p class="text-lg font-black tracking-tight text-[#1f2a44]">Horizon Hotel</p>
+          <p class="text-xs font-medium text-slate-500">Luxury Stay & Booking</p>
+        </div>
+      </a>
+
+      <div class="hidden items-center gap-2 md:flex">
+        <a
+          routerLink="/"
+          routerLinkActive="bg-[#1f2a44] text-white"
+          [routerLinkActiveOptions]="{ exact: true }"
+          class="rounded-full px-5 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-[#1f2a44] hover:text-white"
+        >
+          Trang chủ
+        </a>
+
+        <a
+          routerLink="/rooms"
+          routerLinkActive="bg-[#1f2a44] text-white"
+          class="rounded-full px-5 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-[#1f2a44] hover:text-white"
+        >
+          Phòng
+        </a>
+        @if (authService.currentUser()?.role === 'User') {
+  <a
+    routerLink="/my-bookings"
+    routerLinkActive="bg-[#1f2a44] text-white"
+    class="rounded-full px-5 py-2.5 text-sm font-bold text-slate-600 transition hover:bg-[#1f2a44] hover:text-white"
+  >
+    Đặt phòng của tôi
+  </a>
+}
+      </div>
+
+      <div class="flex items-center gap-3">
+  @if (authService.currentUser(); as user) {
+    <div class="hidden text-right sm:block">
+      <p class="text-sm font-black text-[#1f2a44]">{{ user.fullName }}</p>
+      <p class="text-xs font-semibold text-slate-500">{{ user.role }}</p>
+    </div>
+
+    @if (user.role === 'Admin') {
+      <a
+        routerLink="/admin"
+        class="rounded-full bg-[#1f2a44] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#111827]"
+      >
+        Admin
+      </a>
+    }
+
+    <button
+      type="button"
+      (click)="logout()"
+      class="rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-bold text-[#1f2a44] transition hover:bg-slate-100"
+    >
+      Đăng xuất
+    </button>
+  } @else {
+    <a
+      routerLink="/login"
+      class="hidden rounded-full px-5 py-2.5 text-sm font-bold text-[#1f2a44] transition hover:bg-slate-100 sm:inline-flex"
+    >
+      Đăng nhập
+    </a>
+
+    <a
+      routerLink="/register"
+      class="rounded-full bg-[#c69c6d] px-5 py-2.5 text-sm font-bold text-white shadow-lg shadow-[#c69c6d]/30 transition hover:bg-[#b98958]"
+    >
+      Đăng ký
+    </a>
+  }
+</div>
+    </nav>
+  </header>
+
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+
+  <footer class="border-t border-white/60 bg-[#1f2a44] px-6 py-10 text-white">
+    <div class="mx-auto flex max-w-7xl flex-col justify-between gap-6 md:flex-row md:items-center">
+      <div>
+        <p class="text-xl font-black">Horizon Hotel</p>
+        <p class="mt-2 text-sm text-white/60">Luxury booking experience for modern travelers.</p>
+      </div>
+
+      <p class="text-sm text-white/50">© 2026 Horizon Hotel. All rights reserved.</p>
+    </div>
+  </footer>
+</div>

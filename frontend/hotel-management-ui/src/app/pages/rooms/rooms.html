@@ -1,0 +1,163 @@
+<section class="bg-[#1f2a44] px-6 py-20 text-white">
+  <div class="mx-auto max-w-7xl">
+    <p class="text-sm font-black uppercase tracking-[0.25em] text-[#c69c6d]">Rooms & Suites</p>
+    <h1 class="mt-4 max-w-3xl text-5xl font-black tracking-tight md:text-6xl">
+      Chọn căn phòng phù hợp cho kỳ nghỉ của bạn.
+    </h1>
+    <p class="mt-6 max-w-2xl text-lg leading-8 text-white/70">
+      Khám phá các hạng phòng cao cấp với thiết kế hiện đại, giá minh bạch và đặt phòng nhanh chóng.
+    </p>
+  </div>
+</section>
+
+<section class="mx-auto max-w-7xl px-6 py-14">
+  <div class="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-center">
+    <div>
+      <h2 class="text-3xl font-black text-[#1f2a44]">Danh sách phòng</h2>
+      <p class="mt-2 text-slate-600">Chọn phòng yêu thích và đăng nhập để đặt phòng.</p>
+    </div>
+
+    <div class="rounded-full bg-white px-5 py-3 text-sm font-bold text-[#1f2a44] shadow-sm">
+      {{ rooms().length }} phòng
+    </div>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="mb-6 rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-700">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div class="mb-6 rounded-2xl border border-green-100 bg-green-50 px-5 py-4 text-sm font-bold text-green-700">
+      {{ successMessage() }}
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      @for (item of [1, 2, 3]; track item) {
+        <div class="h-[520px] animate-pulse rounded-[2rem] bg-white shadow-sm"></div>
+      }
+    </div>
+  } @else {
+    <div class="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+      @for (room of rooms(); track room.id) {
+        <article class="group overflow-hidden rounded-[2rem] bg-white shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-2xl">
+          <div class="relative h-72 overflow-hidden">
+            <img
+              [src]="room.imageUrl"
+              [alt]="room.name"
+              class="h-full w-full object-cover transition duration-500 group-hover:scale-110"
+            />
+
+            <div class="absolute left-5 top-5 rounded-full bg-white/90 px-4 py-2 text-xs font-black text-[#1f2a44] backdrop-blur">
+              Room {{ room.roomNumber }}
+            </div>
+
+            <div
+              class="absolute right-5 top-5 rounded-full px-4 py-2 text-xs font-black text-white"
+              [class.bg-[#c69c6d]]="room.status === 'Available'"
+              [class.bg-slate-500]="room.status !== 'Available'"
+            >
+              {{ room.status }}
+            </div>
+          </div>
+
+          <div class="p-6">
+            <h3 class="text-2xl font-black text-[#1f2a44]">{{ room.name }}</h3>
+
+            <p class="mt-3 line-clamp-2 min-h-12 leading-6 text-slate-600">
+              {{ room.description }}
+            </p>
+
+            <div class="mt-5 flex items-center gap-3 text-sm font-semibold text-slate-500">
+              <span class="rounded-full bg-slate-100 px-3 py-1">Tối đa {{ room.capacity }} khách</span>
+              <span class="rounded-full bg-slate-100 px-3 py-1">Wifi miễn phí</span>
+            </div>
+
+            <div class="mt-6 flex items-end justify-between border-t border-slate-100 pt-5">
+              <div>
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Giá mỗi đêm</p>
+                <p class="mt-1 text-3xl font-black text-[#1f2a44]">${{ room.pricePerNight }}</p>
+              </div>
+
+              <button
+                type="button"
+                (click)="openBookingForm(room)"
+                class="rounded-full bg-[#1f2a44] px-5 py-3 text-sm font-black text-white shadow-lg shadow-[#1f2a44]/20 transition hover:bg-[#c69c6d] disabled:cursor-not-allowed disabled:opacity-60"
+                [disabled]="room.status !== 'Available'"
+              >
+                Đặt phòng
+              </button>
+            </div>
+          </div>
+        </article>
+      }
+    </div>
+  }
+  @if (selectedRoom(); as room) {
+  <div class="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/70 px-6 backdrop-blur-sm">
+    <div class="w-full max-w-xl rounded-[2rem] bg-white p-8 shadow-2xl">
+      <div class="flex items-start justify-between gap-6">
+        <div>
+          <p class="text-sm font-black uppercase tracking-[0.2em] text-[#c69c6d]">Booking</p>
+          <h2 class="mt-2 text-3xl font-black text-[#1f2a44]">
+            Đặt phòng {{ room.roomNumber }}
+          </h2>
+          <p class="mt-2 text-slate-600">{{ room.name }}</p>
+        </div>
+
+        <button
+          type="button"
+          (click)="closeBookingForm()"
+          class="rounded-full bg-slate-100 px-4 py-2 text-sm font-black text-slate-600 hover:bg-slate-200"
+        >
+          ✕
+        </button>
+      </div>
+
+      <div class="mt-6 rounded-3xl bg-slate-50 p-5">
+        <div class="flex items-center justify-between">
+          <span class="text-sm font-semibold text-slate-500">Giá mỗi đêm</span>
+          <span class="text-2xl font-black text-[#1f2a44]">${{ room.pricePerNight }}</span>
+        </div>
+      </div>
+
+      <form class="mt-6 space-y-5" (ngSubmit)="submitBooking()">
+        <div>
+          <label class="text-sm font-bold text-slate-700">Check-in</label>
+          <input
+            type="date"
+            name="checkInDate"
+            [(ngModel)]="checkInDate"
+            class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#c69c6d] focus:ring-4 focus:ring-[#c69c6d]/20"
+          />
+        </div>
+
+        <div>
+          <label class="text-sm font-bold text-slate-700">Check-out</label>
+          <input
+            type="date"
+            name="checkOutDate"
+            [(ngModel)]="checkOutDate"
+            class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#c69c6d] focus:ring-4 focus:ring-[#c69c6d]/20"
+          />
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="isBooking()"
+          class="w-full rounded-2xl bg-[#c69c6d] px-5 py-3 font-black text-white shadow-lg shadow-[#c69c6d]/30 transition hover:bg-[#b98958] disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          @if (isBooking()) {
+            Đang đặt phòng...
+          } @else {
+            Xác nhận đặt phòng
+          }
+        </button>
+      </form>
+    </div>
+  </div>
+}
+</section>

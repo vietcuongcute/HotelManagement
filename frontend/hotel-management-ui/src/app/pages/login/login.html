@@ -1,0 +1,71 @@
+<section class="flex min-h-[calc(100vh-80px)] items-center justify-center px-6 py-12">
+  <div class="grid w-full max-w-5xl overflow-hidden rounded-[2rem] bg-white shadow-2xl md:grid-cols-2">
+    <div class="hidden bg-[#1f2a44] p-10 text-white md:block">
+      <p class="text-sm font-black uppercase tracking-[0.2em] text-[#c69c6d]">Welcome back</p>
+      <h1 class="mt-4 text-4xl font-black">Đăng nhập đặt phòng</h1>
+      <p class="mt-4 leading-7 text-white/70">
+        Đăng nhập để đặt phòng, xem lịch sử booking hoặc truy cập trang quản trị dành cho Admin.
+      </p>
+
+      <div class="mt-10 rounded-3xl border border-white/10 bg-white/10 p-6">
+        <p class="text-sm font-bold text-[#c69c6d]">Tài khoản test</p>
+        <p class="mt-4 text-sm text-white/80">Admin</p>
+        <p class="font-bold">admin&#64;hotel.com / Admin123&#64;</p>
+        <p class="mt-4 text-sm text-white/80">User</p>
+        <p class="font-bold">user&#64;hotel.com / User123&#64;</p>
+      </div>
+    </div>
+
+    <div class="p-8 md:p-10">
+      <h2 class="text-3xl font-black text-[#1f2a44]">Đăng nhập</h2>
+      <p class="mt-2 text-sm text-slate-500">Nhập email và mật khẩu để tiếp tục.</p>
+
+      @if (errorMessage()) {
+        <div class="mt-6 rounded-2xl border border-red-100 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+          {{ errorMessage() }}
+        </div>
+      }
+
+      <form class="mt-8 space-y-5" (ngSubmit)="submit()">
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Email</label>
+          <input
+            name="email"
+            [(ngModel)]="email"
+            type="email"
+            class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#c69c6d] focus:ring-4 focus:ring-[#c69c6d]/20"
+            placeholder="admin@hotel.com"
+          />
+        </div>
+
+        <div>
+          <label class="text-sm font-semibold text-slate-700">Mật khẩu</label>
+          <input
+            name="password"
+            [(ngModel)]="password"
+            type="password"
+            class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 outline-none focus:border-[#c69c6d] focus:ring-4 focus:ring-[#c69c6d]/20"
+            placeholder="••••••••"
+          />
+        </div>
+
+        <button
+          type="submit"
+          [disabled]="isLoading()"
+          class="w-full rounded-2xl bg-[#c69c6d] px-5 py-3 font-black text-white shadow-lg shadow-[#c69c6d]/30 transition hover:bg-[#b98958] disabled:cursor-not-allowed disabled:opacity-70"
+        >
+          @if (isLoading()) {
+            Đang đăng nhập...
+          } @else {
+            Đăng nhập
+          }
+        </button>
+      </form>
+
+      <p class="mt-6 text-center text-sm text-slate-500">
+        Chưa có tài khoản?
+        <a routerLink="/register" class="font-bold text-[#c69c6d]">Đăng ký</a>
+      </p>
+    </div>
+  </div>
+</section>
