@@ -1,55 +1,137 @@
 <section class="space-y-8">
   <div class="rounded-[2rem] bg-[#111827] p-8 text-white shadow-xl">
     <p class="text-sm font-black uppercase tracking-[0.25em] text-[#c69c6d]">Dashboard</p>
-    <h2 class="mt-3 text-4xl font-black">Xin chào Admin</h2>
+    <h2 class="mt-3 text-4xl font-black">Tổng quan khách sạn</h2>
     <p class="mt-3 max-w-2xl text-white/60">
-      Đây là khu vực quản trị riêng để quản lý phòng, booking và trạng thái đặt phòng của khách sạn.
+      Theo dõi tình trạng phòng, booking và doanh thu từ hệ thống quản lý khách sạn.
     </p>
   </div>
 
-  <div class="grid gap-6 md:grid-cols-3">
-    <div class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100">
-      <p class="text-sm font-bold text-slate-500">Tổng phòng</p>
-      <p class="mt-3 text-4xl font-black text-[#111827]">--</p>
-      <p class="mt-2 text-sm text-slate-400">Sẽ lấy từ API ở bước sau</p>
+  @if (errorMessage()) {
+    <div class="rounded-2xl border border-red-100 bg-red-50 px-5 py-4 text-sm font-bold text-red-700">
+      {{ errorMessage() }}
+    </div>
+  }
+
+  @if (isLoading()) {
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
+      @for (item of [1, 2, 3, 4, 5]; track item) {
+        <div class="h-36 animate-pulse rounded-[2rem] bg-white shadow-sm"></div>
+      }
+    </div>
+  } @else {
+    <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-5">
+      <div class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100">
+        <p class="text-sm font-bold text-slate-500">Tổng phòng</p>
+        <p class="mt-3 text-4xl font-black text-[#111827]">{{ totalRooms() }}</p>
+        <p class="mt-2 text-sm text-slate-400">Tất cả phòng trong hệ thống</p>
+      </div>
+
+      <div class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100">
+        <p class="text-sm font-bold text-slate-500">Phòng khả dụng</p>
+        <p class="mt-3 text-4xl font-black text-green-600">{{ availableRooms() }}</p>
+        <p class="mt-2 text-sm text-slate-400">Status Available</p>
+      </div>
+
+      <div class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100">
+        <p class="text-sm font-bold text-slate-500">Tổng booking</p>
+        <p class="mt-3 text-4xl font-black text-[#111827]">{{ totalBookings() }}</p>
+        <p class="mt-2 text-sm text-slate-400">Tất cả đặt phòng</p>
+      </div>
+
+      <div class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100">
+        <p class="text-sm font-bold text-slate-500">Đang chờ xử lý</p>
+        <p class="mt-3 text-4xl font-black text-amber-600">{{ pendingBookings() }}</p>
+        <p class="mt-2 text-sm text-slate-400">Booking Pending</p>
+      </div>
+
+      <div class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100">
+        <p class="text-sm font-bold text-slate-500">Doanh thu</p>
+        <p class="mt-3 text-4xl font-black text-[#c69c6d]">${{ revenue() }}</p>
+        <p class="mt-2 text-sm text-slate-400">Từ booking Completed</p>
+      </div>
+    </div>
+
+    <div class="grid gap-6 lg:grid-cols-2">
+      <a
+        routerLink="/admin/rooms"
+        class="group rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-xl"
+      >
+        <p class="text-sm font-black uppercase tracking-[0.2em] text-[#c69c6d]">Rooms</p>
+        <h3 class="mt-3 text-2xl font-black text-[#111827]">Quản lý phòng</h3>
+        <p class="mt-3 text-slate-500">
+          Thêm, sửa, xoá phòng và cập nhật trạng thái phòng.
+        </p>
+        <p class="mt-6 font-black text-[#c69c6d]">Đi tới quản lý phòng →</p>
+      </a>
+
+      <a
+        routerLink="/admin/bookings"
+        class="group rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-xl"
+      >
+        <p class="text-sm font-black uppercase tracking-[0.2em] text-[#c69c6d]">Bookings</p>
+        <h3 class="mt-3 text-2xl font-black text-[#111827]">Quản lý đặt phòng</h3>
+        <p class="mt-3 text-slate-500">
+          Xem danh sách booking và cập nhật trạng thái cho khách.
+        </p>
+        <p class="mt-6 font-black text-[#c69c6d]">Đi tới quản lý booking →</p>
+      </a>
     </div>
 
     <div class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100">
-      <p class="text-sm font-bold text-slate-500">Booking mới</p>
-      <p class="mt-3 text-4xl font-black text-[#111827]">--</p>
-      <p class="mt-2 text-sm text-slate-400">Pending / Confirmed</p>
+      <div class="mb-5 flex items-center justify-between">
+        <div>
+          <p class="text-sm font-black uppercase tracking-[0.2em] text-[#c69c6d]">Recent</p>
+          <h3 class="mt-2 text-2xl font-black text-[#111827]">Booking gần đây</h3>
+        </div>
+
+        <a routerLink="/admin/bookings" class="text-sm font-black text-[#c69c6d]">
+          Xem tất cả →
+        </a>
+      </div>
+
+      @if (recentBookings().length === 0) {
+        <p class="rounded-2xl bg-slate-50 p-5 text-sm font-semibold text-slate-500">
+          Chưa có booking nào.
+        </p>
+      } @else {
+        <div class="overflow-x-auto">
+          <table class="min-w-full divide-y divide-slate-100">
+            <thead>
+              <tr>
+                <th class="py-3 text-left text-xs font-black uppercase tracking-wider text-slate-400">Booking</th>
+                <th class="py-3 text-left text-xs font-black uppercase tracking-wider text-slate-400">Khách</th>
+                <th class="py-3 text-left text-xs font-black uppercase tracking-wider text-slate-400">Phòng</th>
+                <th class="py-3 text-left text-xs font-black uppercase tracking-wider text-slate-400">Tổng tiền</th>
+                <th class="py-3 text-left text-xs font-black uppercase tracking-wider text-slate-400">Status</th>
+              </tr>
+            </thead>
+
+            <tbody class="divide-y divide-slate-100">
+              @for (booking of recentBookings(); track booking.id) {
+                <tr>
+                  <td class="py-4 pr-4 text-sm font-black text-[#111827]">#{{ booking.id }}</td>
+                  <td class="py-4 pr-4 text-sm text-slate-600">{{ booking.userFullName }}</td>
+                  <td class="py-4 pr-4 text-sm text-slate-600">
+                    Room {{ booking.roomNumber }}
+                  </td>
+                  <td class="py-4 pr-4 text-sm font-black text-[#c69c6d]">
+                    ${{ booking.totalPrice }}
+                  </td>
+                  <td class="py-4 pr-4">
+                    <span
+                      class="inline-flex rounded-full px-3 py-1 text-xs font-black ring-1"
+                      [class]="getStatusClass(booking.status)"
+                    >
+                      {{ booking.status }}
+                    </span>
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
     </div>
-
-    <div class="rounded-[2rem] bg-white p-6 shadow-sm ring-1 ring-slate-100">
-      <p class="text-sm font-bold text-slate-500">Doanh thu</p>
-      <p class="mt-3 text-4xl font-black text-[#111827]">--</p>
-      <p class="mt-2 text-sm text-slate-400">Tính theo booking completed</p>
-    </div>
-  </div>
-
-  <div class="grid gap-6 lg:grid-cols-2">
-    <a
-      routerLink="/admin/rooms"
-      class="group rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-xl"
-    >
-      <p class="text-sm font-black uppercase tracking-[0.2em] text-[#c69c6d]">Rooms</p>
-      <h3 class="mt-3 text-2xl font-black text-[#111827]">Quản lý phòng</h3>
-      <p class="mt-3 text-slate-500">
-        Thêm, sửa, xoá phòng và cập nhật trạng thái phòng.
-      </p>
-      <p class="mt-6 font-black text-[#c69c6d]">Đi tới quản lý phòng →</p>
-    </a>
-
-    <a
-      routerLink="/admin/bookings"
-      class="group rounded-[2rem] bg-white p-8 shadow-sm ring-1 ring-slate-100 transition hover:-translate-y-1 hover:shadow-xl"
-    >
-      <p class="text-sm font-black uppercase tracking-[0.2em] text-[#c69c6d]">Bookings</p>
-      <h3 class="mt-3 text-2xl font-black text-[#111827]">Quản lý đặt phòng</h3>
-      <p class="mt-3 text-slate-500">
-        Xem danh sách booking và cập nhật trạng thái cho khách.
-      </p>
-      <p class="mt-6 font-black text-[#c69c6d]">Đi tới quản lý booking →</p>
-    </a>
-  </div>
+  }
 </section>
