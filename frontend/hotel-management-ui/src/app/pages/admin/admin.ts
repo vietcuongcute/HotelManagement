@@ -23,7 +23,9 @@ export class Admin implements OnInit {
     this.rooms().filter((room) => room.status === 'Available').length
   );
 
-  totalBookings = computed(() => this.bookings().length);
+  totalBookings = computed(() =>
+  this.bookings().filter((booking) => booking.status !== 'Cancelled').length
+);
 
   pendingBookings = computed(() =>
     this.bookings().filter((booking) => booking.status === 'Pending').length
@@ -36,13 +38,14 @@ export class Admin implements OnInit {
   );
 
   recentBookings = computed(() =>
-    [...this.bookings()]
-      .sort(
-        (a, b) =>
-          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-      )
-      .slice(0, 5)
-  );
+  [...this.bookings()]
+    .filter((booking) => booking.status !== 'Cancelled')
+    .sort(
+      (a, b) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    )
+    .slice(0, 5)
+);
 
   constructor(
     private roomService: RoomService,
