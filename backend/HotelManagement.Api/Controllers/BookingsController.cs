@@ -191,4 +191,39 @@ public class BookingsController : ControllerBase
 
         return Ok(new { message = "Cập nhật trạng thái booking thành công." });
     }
+    [Authorize(Roles = "User")]
+[HttpPut("{id:int}/cancel")]
+public async Task<IActionResult> CancelMyBooking(int id)
+{
+    var userIdValue = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+    if (!int.TryParse(userIdValue, out var userId))
+    {
+        return Unauthorized(new { message = "Token không hợp lệ." });
+    }
+
+    var booking = await _context.Bookings
+        .FirstOrDefaultAsync(b => b.Id == id && b.UserId == userId);
+
+    if (booking == null)
+    {
+        return NotFound(new { message = "Không tìm thấy booking của bạn." });
+    }
+
+    if (booking.Status == "Cancelled")
+    {
+        return BadRequest(new { message = "Booking này đã được huỷ trước đó." });
+    }
+
+    if (booking.Status == "Completed")
+    {
+        return BadRequest(new { message = "Không thể huỷ booking đã hoàn thành." });
+    }
+
+    booking.Status = "Cancelled";
+
+    await _context.SaveChangesAsync();
+
+    return Ok(new { message = "Huỷ đặt phòng thành công." });
+}
 }
