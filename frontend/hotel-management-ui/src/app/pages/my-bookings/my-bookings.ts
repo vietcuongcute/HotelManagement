@@ -25,18 +25,8 @@ export class MyBookings implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    if (!this.authService.isLoggedIn()) {
-      this.router.navigateByUrl('/login');
-      return;
-    }
-
-    if (!this.authService.isUser()) {
-      this.router.navigateByUrl('/');
-      return;
-    }
-
-    this.loadBookings();
-  }
+  this.loadBookings();
+}
 
   loadBookings(): void {
     this.isLoading.set(true);

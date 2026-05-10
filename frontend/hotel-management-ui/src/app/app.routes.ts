@@ -12,6 +12,8 @@ import { AdminRooms } from './pages/admin-rooms/admin-rooms';
 import { AdminBookings } from './pages/admin-bookings/admin-bookings';
 import { NotFound } from './pages/not-found/not-found';
 
+import { adminGuard, userGuard } from './core/services/auth.guard';
+
 export const routes: Routes = [
   {
     path: '',
@@ -28,6 +30,7 @@ export const routes: Routes = [
       {
         path: 'my-bookings',
         component: MyBookings,
+        canActivate: [userGuard],
       },
       {
         path: 'login',
@@ -42,6 +45,7 @@ export const routes: Routes = [
   {
     path: 'admin',
     component: AdminLayout,
+    canActivate: [adminGuard],
     children: [
       {
         path: '',
