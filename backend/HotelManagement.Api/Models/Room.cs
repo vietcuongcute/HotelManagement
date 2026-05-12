@@ -6,6 +6,8 @@ public class Room
 
     public string RoomNumber { get; set; } = string.Empty;
 
+    public int Floor { get; set; } = 1;
+
     public string Name { get; set; } = string.Empty;
 
     public string Description { get; set; } = string.Empty;

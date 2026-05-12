@@ -28,6 +28,7 @@ public class RoomsController : ControllerBase
             {
                 Id = r.Id,
                 RoomNumber = r.RoomNumber,
+                Floor = r.Floor,
                 Name = r.Name,
                 Description = r.Description,
                 PricePerNight = r.PricePerNight,
@@ -51,6 +52,7 @@ public class RoomsController : ControllerBase
                 Id = r.Id,
                 RoomNumber = r.RoomNumber,
                 Name = r.Name,
+                Floor = r.Floor,
                 Description = r.Description,
                 PricePerNight = r.PricePerNight,
                 Capacity = r.Capacity,
@@ -78,12 +80,16 @@ public class RoomsController : ControllerBase
         {
             return BadRequest(new { message = "Số phòng đã tồn tại." });
         }
-
+        if (dto.Floor <= 0)
+{
+    return BadRequest(new { message = "Tầng phải lớn hơn 0." });
+}
         var room = new Room
         {
             RoomNumber = dto.RoomNumber.Trim(),
             Name = dto.Name.Trim(),
             Description = dto.Description.Trim(),
+            Floor = dto.Floor,
             PricePerNight = dto.PricePerNight,
             Capacity = dto.Capacity,
             ImageUrl = dto.ImageUrl.Trim(),
@@ -98,6 +104,7 @@ public class RoomsController : ControllerBase
             Id = room.Id,
             RoomNumber = room.RoomNumber,
             Name = room.Name,
+            Floor = room.Floor,
             Description = room.Description,
             PricePerNight = room.PricePerNight,
             Capacity = room.Capacity,
@@ -118,7 +125,10 @@ public class RoomsController : ControllerBase
         {
             return NotFound(new { message = "Không tìm thấy phòng." });
         }
-
+        if (dto.Floor <= 0)
+{
+    return BadRequest(new { message = "Tầng phải lớn hơn 0." });
+}
         var duplicateRoomNumber = await _context.Rooms
             .AnyAsync(r => r.Id != id && r.RoomNumber == dto.RoomNumber.Trim());
 
@@ -131,6 +141,7 @@ public class RoomsController : ControllerBase
         room.Name = dto.Name.Trim();
         room.Description = dto.Description.Trim();
         room.PricePerNight = dto.PricePerNight;
+        room.Floor = dto.Floor;
         room.Capacity = dto.Capacity;
         room.ImageUrl = dto.ImageUrl.Trim();
         room.Status = dto.Status.Trim();

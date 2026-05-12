@@ -76,6 +76,8 @@ DTOs/
 Migrations/
  20260509082142_InitialCreate.cs
  20260509082142_InitialCreate.Designer.cs
+ 20260511112218_AddRoomFloor.cs
+ 20260511112218_AddRoomFloor.Designer.cs
  ApplicationDbContextModelSnapshot.cs
 Models/
  Booking.cs

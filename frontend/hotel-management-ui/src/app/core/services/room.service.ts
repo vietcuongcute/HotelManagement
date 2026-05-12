@@ -6,6 +6,7 @@ import { Room } from '../models/room.models';
 export interface CreateRoomRequest {
   roomNumber: string;
   name: string;
+  floor: number;
   description: string;
   pricePerNight: number;
   capacity: number;
@@ -16,6 +17,7 @@ export interface CreateRoomRequest {
 export interface UpdateRoomRequest {
   roomNumber: string;
   name: string;
+  floor: number;
   description: string;
   pricePerNight: number;
   capacity: number;

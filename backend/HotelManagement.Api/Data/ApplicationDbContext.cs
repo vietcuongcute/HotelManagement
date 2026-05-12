@@ -28,17 +28,22 @@ public class ApplicationDbContext : DbContext
             .HasMaxLength(20);
 
         // Room
-        modelBuilder.Entity<Room>()
-            .HasIndex(r => r.RoomNumber)
-            .IsUnique();
+        // Room
+modelBuilder.Entity<Room>()
+    .HasIndex(r => r.RoomNumber)
+    .IsUnique();
 
-        modelBuilder.Entity<Room>()
-            .Property(r => r.PricePerNight)
-            .HasColumnType("decimal(18,2)");
+modelBuilder.Entity<Room>()
+    .Property(r => r.Floor)
+    .HasDefaultValue(1);
 
-        modelBuilder.Entity<Room>()
-            .Property(r => r.Status)
-            .HasMaxLength(30);
+modelBuilder.Entity<Room>()
+    .Property(r => r.PricePerNight)
+    .HasColumnType("decimal(18,2)");
+
+modelBuilder.Entity<Room>()
+    .Property(r => r.Status)
+    .HasMaxLength(30);
 
         // Booking
         modelBuilder.Entity<Booking>()

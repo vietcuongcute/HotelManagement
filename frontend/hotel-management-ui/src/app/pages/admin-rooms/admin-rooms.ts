@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, computed, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import {
   CreateRoomRequest,
@@ -6,6 +6,7 @@ import {
   UpdateRoomRequest,
 } from '../../core/services/room.service';
 import { Room } from '../../core/models/room.models';
+
 
 @Component({
   selector: 'app-admin-rooms',
@@ -21,19 +22,35 @@ export class AdminRooms implements OnInit {
   successMessage = signal('');
   editingRoom = signal<Room | null>(null);
   showForm = signal(false);
+  selectedFloor = signal<number | 'All'>('All');
 
   statuses = ['Available', 'Booked', 'Maintenance'];
 
   form: CreateRoomRequest = {
     roomNumber: '',
     name: '',
+    floor: 1,
     description: '',
     pricePerNight: 0,
     capacity: 2,
     imageUrl: '',
     status: 'Available',
   };
+  
+  floors = computed(() => {
+  const uniqueFloors = new Set(this.rooms().map((room) => room.floor));
+  return [...uniqueFloors].sort((a, b) => a - b);
+});
 
+filteredRooms = computed(() => {
+  const floor = this.selectedFloor();
+
+  if (floor === 'All') {
+    return this.rooms();
+  }
+
+  return this.rooms().filter((room) => room.floor === floor);
+});
   constructor(private roomService: RoomService) {}
 
   ngOnInit(): void {
@@ -65,6 +82,7 @@ export class AdminRooms implements OnInit {
     this.form = {
       roomNumber: '',
       name: '',
+      floor: 1,
       description: '',
       pricePerNight: 0,
       capacity: 2,
@@ -82,6 +100,7 @@ export class AdminRooms implements OnInit {
     this.form = {
       roomNumber: room.roomNumber,
       name: room.name,
+      floor: room.floor,
       description: room.description,
       pricePerNight: room.pricePerNight,
       capacity: room.capacity,
@@ -104,6 +123,11 @@ export class AdminRooms implements OnInit {
       this.errorMessage.set('Vui lòng nhập đầy đủ số phòng, tên phòng và mô tả.');
       return;
     }
+
+    if (this.form.floor <= 0) {
+  this.errorMessage.set('Tầng phải lớn hơn 0.');
+  return;
+}
 
     if (this.form.pricePerNight <= 0) {
       this.errorMessage.set('Giá phòng phải lớn hơn 0.');
